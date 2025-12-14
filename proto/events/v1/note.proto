@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package events.v1;
+
+option go_package = "secure_notes/internal/gen/go/events/v1;eventsv1";
+
+import "google/protobuf/timestamp.proto";
+
+message EventEnvelope {
+  string event_id = 1;
+  string event_type = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+  uint32 schema_version = 4;
+
+  oneof payload {
+    NoteCreated note_created = 10;
+    NoteUpdated note_updated = 11;
+    NoteDeleted note_deleted = 12;
+  }
+}
+
+message NoteCreated {
+  string note_id = 1;
+  string user_id = 2;
+  string title = 3;
+  string content = 4;
+  repeated string tags = 5;
+  bool is_archived = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message NoteUpdated {
+  string note_id = 1;
+  string user_id = 2;
+  string title = 3;
+  string content = 4;
+  repeated string tags = 5;
+  bool is_archived = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message NoteDeleted {
+  string note_id = 1;
+  string user_id = 2;
+  google.protobuf.Timestamp deleted_at = 3;
+}
