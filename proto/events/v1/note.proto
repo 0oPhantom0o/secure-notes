@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package events.v1;
 
-option go_package = "secure_notes/internal/gen/go/events/v1;eventsv1";
+option go_package = "example.com/secure-notes/internal/gen/go/events/v1;eventsv1";
 
 import "google/protobuf/timestamp.proto";
 

@@ -437,7 +437,7 @@ const file_events_v1_note_proto_rawDesc = "" +
 	"\anote_id\x18\x01 \x01(\tR\x06noteId\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x129\n" +
 	"\n" +
-	"deleted_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tdeletedAtB1Z/secure_notes/internal/gen/go/events/v1;eventsv1b\x06proto3"
+	"deleted_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tdeletedAtB1Z/secureNotes/internal/gen/go/events/v1;eventsv1b\x06proto3"
 
 var (
 	file_events_v1_note_proto_rawDescOnce sync.Once
