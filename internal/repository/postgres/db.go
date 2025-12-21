@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -8,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewDB() (*gorm.DB, error) {
+func NewDB(ctx context.Context) (*gorm.DB, error) {
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
 	user := os.Getenv("DB_USER")
@@ -16,7 +17,7 @@ func NewDB() (*gorm.DB, error) {
 	password := os.Getenv("DB_PASSWORD")
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Tehran", host, user, password, name, port)
-
+	fmt.Println(dsn)
 	// 4. باز کردن اتصال
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -28,7 +29,7 @@ func NewDB() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = db.Ping()
+	err = db.PingContext(ctx)
 	if err != nil {
 
 		return nil, err
