@@ -18,13 +18,12 @@ func NewDB(ctx context.Context) (*gorm.DB, error) {
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Tehran", host, user, password, name, port)
 	fmt.Println(dsn)
-	// 4. باز کردن اتصال
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println("✅ Connected to Database successfully!")
+	fmt.Println("Connected to Database successfully!")
 	db, err := DB.DB()
 	if err != nil {
 		return nil, err
@@ -34,6 +33,6 @@ func NewDB(ctx context.Context) (*gorm.DB, error) {
 
 		return nil, err
 	}
-	fmt.Println(" Database Migrated")
+	fmt.Println("Database Migrated")
 	return DB, nil
 }
