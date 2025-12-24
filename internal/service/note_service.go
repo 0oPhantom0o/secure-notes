@@ -29,3 +29,6 @@ func (s *NoteService) CreateNote(ctx context.Context, n domain.Note) (domain.Not
 	}
 	return s.repo.Create(ctx, n)
 }
+func (s *NoteService) GetByID(ctx context.Context, id int64) (domain.Note, error) {
+	return s.repo.GetByID(ctx, id)
+}

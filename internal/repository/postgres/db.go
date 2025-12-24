@@ -15,7 +15,6 @@ func NewDB(ctx context.Context) (*gorm.DB, error) {
 	user := os.Getenv("DB_USER")
 	name := os.Getenv("DB_NAME")
 	password := os.Getenv("DB_PASSWORD")
-
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Tehran", host, user, password, name, port)
 	fmt.Println(dsn)
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})

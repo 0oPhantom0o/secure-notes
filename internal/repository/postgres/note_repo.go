@@ -23,7 +23,7 @@ func (r NoteRepo) Create(ctx context.Context, note domain.Note) (domain.Note, er
 }
 func (r NoteRepo) GetByID(ctx context.Context, id int64) (domain.Note, error) {
 	var note domain.Note
-	if err := r.db.WithContext(ctx).First(note, "id = ?", id).Error; err != nil {
+	if err := r.db.WithContext(ctx).First(&note, "id = ?", id).Error; err != nil {
 		return domain.Note{}, err
 	}
 	return note, nil

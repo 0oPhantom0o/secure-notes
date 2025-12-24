@@ -22,5 +22,6 @@ func NewServer(noteHandler *handler.NoteHandler) *fiber.App {
 		return c.JSON(fiber.Map{"status": "ok"})
 	})
 	api.Post(pathNote, noteHandler.Create)
+	api.Get(pathNote+"/:id", noteHandler.GetByID)
 	return app
 }

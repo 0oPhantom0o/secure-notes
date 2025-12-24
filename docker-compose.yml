@@ -1,3 +1,5 @@
+
+
 services:
   postgres:
     image: postgres:17.4
@@ -7,10 +9,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: notepad
+    ports:
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
-    network_mode: host
 
 volumes:
   pgdata:
