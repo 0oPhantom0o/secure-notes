@@ -23,5 +23,7 @@ func NewServer(noteHandler *handler.NoteHandler) *fiber.App {
 	})
 	api.Post(pathNote, noteHandler.Create)
 	api.Get(pathNote+"/:id", noteHandler.GetByID)
+	api.Put(pathNote+"/:id", noteHandler.UpdateByID)
+	api.Delete(pathNote+"/:id", noteHandler.DeleteByID)
 	return app
 }
