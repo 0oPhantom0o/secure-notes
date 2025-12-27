@@ -24,5 +24,6 @@ var serveCmd = &cobra.Command{
 
 func Start() (*fiber.App, error) {
 	app, err := appDB.New(context.Background())
+
 	return app, err
 }

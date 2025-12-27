@@ -6,4 +6,5 @@ const (
 	CodeInternal     = "INTERNAL"
 	CodeBadRequest   = "BAD_REQUEST"
 	CodeValidation   = "VALIDATION_ERROR"
+	CodeUnauthorized = "UNAUTHORIZED"
 )

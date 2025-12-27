@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/secure-notes/internal/domain"
+	"github.com/secure-notes/internal/http/middleware"
 	"github.com/secure-notes/internal/http/response"
 	"github.com/secure-notes/internal/service"
 	"strconv"
@@ -31,6 +32,13 @@ func (h NoteHandler) Create(c *fiber.Ctx) error {
 		Title:   req.Title,
 		Content: req.Content,
 	}
+	uidAny := c.Locals(middleware.LocalUserIDKey)
+	uid, ok := uidAny.(int64)
+	if !ok || uid <= 0 {
+		return c.Status(fiber.StatusUnauthorized).
+			JSON(response.NewError(response.CodeUnauthorized, "unauthorized"))
+	}
+	note.UserID = uid
 	created, err := h.svc.CreateNote(c.Context(), note)
 	if err != nil {
 		if errors.Is(err, service.ErrInvalidContent) || errors.Is(err, service.ErrInvalidTitle) {
@@ -84,6 +92,7 @@ func (h NoteHandler) DeleteByID(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusNoContent).JSON(fiber.Map{"status": true})
 
 }
+
 func (h NoteHandler) GetByID(c *fiber.Ctx) error {
 	noteID := c.Params("id")
 
