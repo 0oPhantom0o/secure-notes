@@ -10,7 +10,6 @@
         <option value="gocognit" />
         <option value="nestif" />
         <option value="grouper" />
-        <option value="wsl" />
         <option value="varnamelen" />
         <option value="arangolint" />
         <option value="bidichk" />
