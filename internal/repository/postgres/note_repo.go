@@ -21,9 +21,9 @@ func (r NoteRepo) Create(ctx context.Context, note domain.Note) (domain.Note, er
 	return note, nil
 }
 
-func (r NoteRepo) GetByID(ctx context.Context, id int64) (domain.Note, error) {
+func (r NoteRepo) GetByID(ctx context.Context, noteID, uid int64) (domain.Note, error) {
 	var note domain.Note
-	if err := r.db.WithContext(ctx).First(&note, "id = ?", id).Error; err != nil {
+	if err := r.db.WithContext(ctx).First(&note, "id = ? and userID = ?", noteID, uid).Error; err != nil {
 		return domain.Note{}, err
 	}
 	return note, nil
@@ -31,7 +31,7 @@ func (r NoteRepo) GetByID(ctx context.Context, id int64) (domain.Note, error) {
 func (r NoteRepo) Update(ctx context.Context, note domain.Note) error {
 	tx := r.db.WithContext(ctx).
 		Model(&domain.Note{}).
-		Where("id = ?", note.ID).
+		Where("id = ? and userID = ? ", note.ID, note.UserID).
 		Updates(map[string]any{
 			"title":   note.Title,
 			"content": note.Content,
@@ -46,9 +46,9 @@ func (r NoteRepo) Update(ctx context.Context, note domain.Note) error {
 	return nil
 }
 
-func (r NoteRepo) RemoveByID(ctx context.Context, id int64) error {
+func (r NoteRepo) RemoveByID(ctx context.Context, noteID, uid int64) error {
 	var note domain.Note
-	Rerr := r.db.WithContext(ctx).Delete(&note, id)
+	Rerr := r.db.WithContext(ctx).Delete(&note).Where("id = ? and userID = ? ", noteID, uid)
 	if Rerr.Error != nil {
 		return Rerr.Error
 	}

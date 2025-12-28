@@ -30,9 +30,9 @@ func NewServer(noteHandler *handler.NoteHandler, userHandler *handler.UserAuthHa
 
 	notes := api.Group(pathNote, middleware.AuthRequired(jwtm))
 	notes.Post("/", noteHandler.Create)
-	notes.Get(pathNote+"/:id", noteHandler.GetByID)
-	notes.Put(pathNote+"/:id", noteHandler.UpdateByID)
-	notes.Delete(pathNote+"/:id", noteHandler.DeleteByID)
+	notes.Get("/:id", noteHandler.GetByID)
+	notes.Put("/:id", noteHandler.UpdateByID)
+	notes.Delete("/:id", noteHandler.DeleteByID)
 
 	auth := api.Group(pathAuth)
 	auth.Post(register, userHandler.Register)

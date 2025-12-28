@@ -66,6 +66,13 @@ func (h NoteHandler) UpdateByID(c *fiber.Ctx) error {
 		Title:   req.Title,
 		Content: req.Content,
 	}
+	uidAny := c.Locals(middleware.LocalUserIDKey)
+	uid, ok := uidAny.(int64)
+	if !ok || uid <= 0 {
+		return c.Status(fiber.StatusUnauthorized).
+			JSON(response.NewError(response.CodeUnauthorized, "unauthorized"))
+	}
+	note.UserID = uid
 	err = h.svc.UpdateByID(c.Context(), note)
 	if err != nil {
 		if errors.Is(err, domain.ErrNoteNotFound) {
@@ -76,14 +83,19 @@ func (h NoteHandler) UpdateByID(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusNoContent)
 }
 func (h NoteHandler) DeleteByID(c *fiber.Ctx) error {
-	noteID := c.Params("id")
+	id := c.Params("id")
 
-	id, err := idValidator(noteID)
+	noteID, err := idValidator(id)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(response.NewError(response.CodeInvalidID, "invalid id"))
 	}
-	err = h.svc.RemoveNote(c.Context(), id)
-	if err != nil {
+	uidAny := c.Locals(middleware.LocalUserIDKey)
+	uid, ok := uidAny.(int64)
+	if !ok || uid <= 0 {
+		return c.Status(fiber.StatusUnauthorized).
+			JSON(response.NewError(response.CodeUnauthorized, "unauthorized"))
+	}
+	if err = h.svc.RemoveNote(c.Context(), noteID, uid); err != nil {
 		if errors.Is(err, domain.ErrNoteNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(response.NewError(response.CodeNoteNotFound, "note not found"))
 		}
@@ -100,7 +112,13 @@ func (h NoteHandler) GetByID(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(response.NewError(response.CodeInvalidID, "invalid id"))
 	}
-	note, err := h.svc.GetByID(c.Context(), id)
+	uidAny := c.Locals(middleware.LocalUserIDKey)
+	uid, ok := uidAny.(int64)
+	if !ok || uid <= 0 {
+		return c.Status(fiber.StatusUnauthorized).
+			JSON(response.NewError(response.CodeUnauthorized, "unauthorized"))
+	}
+	note, err := h.svc.GetByID(c.Context(), id, uid)
 	if err != nil {
 		if errors.Is(err, domain.ErrNoteNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(response.NewError(response.CodeNoteNotFound, "note not found"))

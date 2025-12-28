@@ -37,15 +37,17 @@ func (s *NoteService) UpdateByID(ctx context.Context, n domain.Note) error {
 	if strings.TrimSpace(n.Content) == "" {
 		return ErrInvalidContent
 	}
-	err := s.repo.Update(ctx, n)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return domain.ErrNoteNotFound
+	if err := s.repo.Update(ctx, n); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return domain.ErrNoteNotFound
+		}
+		return err
 	}
 
 	return nil
 }
-func (s *NoteService) RemoveNote(ctx context.Context, id int64) error {
-	err := s.repo.RemoveByID(ctx, id)
+func (s *NoteService) RemoveNote(ctx context.Context, noteID, uid int64) error {
+	err := s.repo.RemoveByID(ctx, noteID, uid)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return domain.ErrNoteNotFound
@@ -54,8 +56,8 @@ func (s *NoteService) RemoveNote(ctx context.Context, id int64) error {
 	}
 	return nil
 }
-func (s *NoteService) GetByID(ctx context.Context, id int64) (domain.Note, error) {
-	note, err := s.repo.GetByID(ctx, id)
+func (s *NoteService) GetByID(ctx context.Context, noteID, uid int64) (domain.Note, error) {
+	note, err := s.repo.GetByID(ctx, noteID, uid)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return domain.Note{}, domain.ErrNoteNotFound
