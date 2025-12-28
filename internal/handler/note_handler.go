@@ -10,18 +10,6 @@ import (
 	"strconv"
 )
 
-type NoteHandler struct {
-	svc *service.NoteService
-}
-type createNoteReq struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
-}
-
-func NewHandler(svc *service.NoteService) *NoteHandler {
-	return &NoteHandler{svc: svc}
-}
-
 func (h NoteHandler) Create(c *fiber.Ctx) error {
 	var req createNoteReq
 	if err := c.BodyParser(&req); err != nil {
@@ -127,6 +115,29 @@ func (h NoteHandler) GetByID(c *fiber.Ctx) error {
 	}
 	return c.Status(fiber.StatusOK).JSON(note)
 }
+
+func (h NoteHandler) List(c *fiber.Ctx) error {
+	uidAny := c.Locals("user_id")
+	uid, ok := uidAny.(int64)
+	if !ok || uid <= 0 {
+		return c.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	limit := c.QueryInt("limit", 20)
+	offset := c.QueryInt("offset", 0)
+	if limit <= 0 || limit > 100 {
+		limit = 20
+	}
+	if offset < 0 {
+		offset = 0
+	}
+	notes, err := h.svc.List(c.Context(), uid, limit, offset)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(response.NewError(response.CodeInternal, "internal server error"))
+	}
+	return c.Status(fiber.StatusOK).JSON(notes)
+}
+
 func idValidator(id string) (int64, error) {
 	return strconv.ParseInt(id, 10, 64)
 }

@@ -46,6 +46,13 @@ func (s *NoteService) UpdateByID(ctx context.Context, n domain.Note) error {
 
 	return nil
 }
+func (s *NoteService) List(ctx context.Context, uid int64, limit, offset int) ([]domain.Note, error) {
+	list, err := s.repo.List(ctx, uid, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+	return list, nil
+}
 func (s *NoteService) RemoveNote(ctx context.Context, noteID, uid int64) error {
 	err := s.repo.RemoveByID(ctx, noteID, uid)
 	if err != nil {

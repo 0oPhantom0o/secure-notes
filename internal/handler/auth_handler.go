@@ -9,18 +9,6 @@ import (
 	"time"
 )
 
-type UserAuthHandler struct {
-	svc *service.UserAuth
-}
-type createUsereAuthReq struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-func NewUserAuthHandler(svc *service.UserAuth) *UserAuthHandler {
-	return &UserAuthHandler{svc: svc}
-}
-
 func (h UserAuthHandler) Register(c *fiber.Ctx) error {
 	var req createUsereAuthReq
 	if err := c.BodyParser(&req); err != nil {
